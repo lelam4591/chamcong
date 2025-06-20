@@ -3,6 +3,7 @@ const sql = require('mssql');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const ExcelJS = require('exceljs');
+require('dotenv').config();
 
 const app = express();
 app.use(express.static('public'));
@@ -111,22 +112,23 @@ app.post('/connect', async (req, res) => {
 
   let config;
   if (option === '1') {
-    config = {
-      user: 'pmcc',
-      password,
-      server: '103.42.57.125',
-      database: 'MITACOSQL',
-      options: { encrypt: false, trustServerCertificate: true }
-    };
-  } else {
-    config = {
-      user: 'sa',
-      password,
-      server: '192.168.1.6\\SQL2014',
-      database: 'MITACO',
-      options: { encrypt: false, trustServerCertificate: true }
-    };
-  }
+  config = {
+    user: process.env.SQL1_USER,
+    password,
+    server: process.env.SQL1_SERVER,
+    database: process.env.SQL1_DATABASE,
+    options: { encrypt: false, trustServerCertificate: true }
+  };
+} else {
+  config = {
+    user: process.env.SQL2_USER,
+    password,
+    server: process.env.SQL2_SERVER,
+    database: process.env.SQL2_DATABASE,
+    options: { encrypt: false, trustServerCertificate: true }
+  };
+}
+
 
   try {
     const pool = await sql.connect(config);
